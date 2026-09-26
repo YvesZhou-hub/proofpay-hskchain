@@ -1,6 +1,6 @@
 # Devfolio submission draft
 
-Use the address and demo fields below only after confirming their live URLs. The repository is currently private; reviewers need access before submission.
+The public repository, live web page, contract source verification, and testnet payouts were checked on 26 September 2026. Task #0 is a scripted dry run; tasks #1–#3 used real DeepSeek API calls for worker and verifier. Show task #3 to judges: its factual output, specific 100/100 reason, hash match, and payout are visible on the live page. The API behind the page depends on a temporary tunnel from the demo Mac, so keep it running through judging.
 
 ## Project name
 
@@ -34,10 +34,12 @@ The escrow and demo ERC-20 are Solidity contracts on HSKChain testnet (chain ID 
 ## Links to fill in
 
 - GitHub: https://github.com/YvesZhou-hub/proofpay-hskchain
-- Live demo: **add publicly reachable URL or video**
+- Live demo: https://proofpay-hskchain.vercel.app
 - HSKChain testnet escrow: [0xE0c95F19d607bA0B3100F1c942589B63D4f3Ea03](https://testnet-explorer.hskchain.net/address/0xE0c95F19d607bA0B3100F1c942589B63D4f3Ea03)
 - HSKChain testnet demo token: [0x41c4986C36Af380d0E5Ba910Bd04947574918ca8](https://testnet-explorer.hskchain.net/address/0x41c4986C36Af380d0E5Ba910Bd04947574918ca8)
 - Testnet payout: [claim transaction for task #0](https://testnet-explorer.hskchain.net/tx/0xd40a90d3570a8b4b363e0202fbb4e163b19a4661d821353a94141c34ff4611f7)
+- Real-AI testnet payout: [claim transaction for task #1](https://testnet-explorer.hskchain.net/tx/0x9565c2d4f059c54d3a91201b0de488310c5277dd30a97ffee1b427f5055326a6)
+- Recommended demo transaction: [task #3 automatic payout](https://testnet-explorer.hskchain.net/tx/0x4f0dd71eec45441cd7ab8c25b80542fedd53bacd5d630603394f561f8775b3d2)
 - Technical documentation: `docs/ARCHITECTURE.md` in the repository
 
 ## Common questions
@@ -52,4 +54,4 @@ The escrow and demo ERC-20 are Solidity contracts on HSKChain testnet (chain ID 
 
 ## Current validation status
 
-Foundry tests, TypeScript checks, Next.js build, browser rendering, and local Anvil and HSKChain testnet transaction flows have passed. The testnet flow used a clearly labelled scripted verdict and paid 100 demo mUSDT to the worker wallet. Real OpenAI calls, public API availability, and remote reviewer access must be verified separately before claiming they work.
+Foundry tests, TypeScript checks, Next.js build, browser rendering, and local Anvil and HSKChain testnet transaction flows passed. Task #0 used a labelled scripted verdict. Tasks #1–#3 used real DeepSeek calls and paid 100 demo mUSDT each after the challenge window. Task #3 scored 100/100; its output accurately described the contract flow. The public Vercel page displayed all four paid tasks, reasons matching on-chain hashes, and working submission links. Its API returned reasons and submissions through the temporary tunnel. OpenAI was not tested.

@@ -61,7 +61,7 @@ The content and criteria are untrusted model inputs. The prompt instructs the mo
 - Foundry: normal flow, rejection/resubmission, dispute/refund, early claim revert, verifier authorization, deadline refund and submitted-state refund guard.
 - TypeScript typechecks for services and web; Next.js production build.
 - Local Anvil chain ID 133 end-to-end: token mint and approval, bounty creation, agent acceptance/submission, verifier approval, keeper release, worker token balance and displayed reason hash.
-- HSKChain testnet RPC chain ID was queried live and returned `0x85` (133). Both contracts were deployed and task #0 completed the agent, verifier and automatic payout flow on testnet with a scripted verdict. The worker's 100 mUSDT balance and transactions were checked on chain; this does not validate a real model call.
+- HSKChain testnet RPC chain ID was queried live and returned `0x85` (133). Both contracts were deployed. Task #0 completed with a scripted verdict. Tasks #1–#3 completed with real `deepseek-flash` calls for worker and verifier, followed by automatic payouts. The worker's 400 mUSDT balance across four tasks and the transactions were checked on chain. The live Vercel page showed task #3 paid, with its reason matching the on-chain hash.
 
 ## Roadmap
 

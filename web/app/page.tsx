@@ -13,8 +13,8 @@ import {
   stringToHex,
   type Abi,
 } from "viem";
-import escrowJson from "../../shared/BountyEscrow.abi.json";
-import tokenJson from "../../shared/MockUSDT.abi.json";
+import escrowJson from "../abi/BountyEscrow.abi.json";
+import tokenJson from "../abi/MockUSDT.abi.json";
 import { hsk } from "./providers";
 
 const escrowAbi = escrowJson as Abi;
@@ -24,7 +24,7 @@ const escrowAddress = process.env.NEXT_PUBLIC_ESCROW_ADDRESS as
 const tokenAddress = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as
   `0x${string}` | undefined;
 const serviceUrl =
-  process.env.NEXT_PUBLIC_SERVICE_URL || "http://localhost:8787";
+  process.env.NEXT_PUBLIC_SERVICE_URL || "/api";
 const explorer = hsk.blockExplorers.default.url;
 const publicClient = createPublicClient({
   chain: hsk,
@@ -65,6 +65,21 @@ function errorText(error: unknown) {
       ? String(error.shortMessage)
       : error.message
     : String(error);
+}
+
+function submissionHref(uri: string) {
+  try {
+    const url = new URL(uri);
+    if (
+      (url.hostname === "localhost" || url.hostname === "127.0.0.1") &&
+      /^\/submissions\/[0-9a-f-]+$/.test(url.pathname)
+    ) {
+      return `${serviceUrl}${url.pathname}`;
+    }
+  } catch {
+    // Preserve other URI formats as recorded onchain.
+  }
+  return uri;
 }
 
 export default function Home() {
@@ -246,6 +261,7 @@ export default function Home() {
         abi: escrowAbi,
         functionName: "createBounty",
         args: [value, criteria.trim(), deadline],
+        gas: 700_000n,
         chain: hsk,
         account: address,
       });
@@ -563,7 +579,7 @@ export default function Home() {
                 <div className="evidence">
                   <h4>Submission</h4>
                   <a
-                    href={bounty.submissionURI}
+                    href={submissionHref(bounty.submissionURI)}
                     target="_blank"
                     rel="noreferrer"
                   >

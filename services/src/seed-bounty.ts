@@ -38,6 +38,8 @@ async function send(
     abi,
     functionName,
     args,
+    // The public RPC can lag behind a confirmed transaction during gas estimation.
+    gas: 700_000n,
     nonce,
   });
   const receipt = await publicClient.waitForTransactionReceipt({ hash });

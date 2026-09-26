@@ -11,10 +11,12 @@ import { produce } from "./llm.js";
 
 const { account, wallet } = walletFor("AGENT");
 const busy = new Set<string>();
+const submittedRecently = new Map<string, number>();
 let scanRunning = false;
 
 async function work(id: bigint) {
   if (busy.has(String(id))) return;
+  if (Date.now() - (submittedRecently.get(String(id)) || 0) < 30_000) return;
   busy.add(String(id));
   try {
     const bounty = await getBounty(id);
@@ -96,6 +98,7 @@ async function work(id: bigint) {
     });
     if (submitted.status !== "success")
       throw new Error(`Submit reverted: ${submitTx}`);
+    submittedRecently.set(String(id), Date.now());
     console.log(`Submitted bounty #${id}: ${submitTx}`);
   } catch (error) {
     console.error(`Bounty #${id}:`, error);

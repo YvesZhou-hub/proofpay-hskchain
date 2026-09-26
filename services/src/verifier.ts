@@ -13,6 +13,8 @@ import { saveReason } from "./store.js";
 const { account, wallet } = walletFor("VERIFIER");
 const busy = new Set<string>();
 const settling = new Set<string>();
+const verifiedRecently = new Map<string, { hash: string; at: number }>();
+const settledRecently = new Map<string, number>();
 let settlementScanRunning = false;
 
 async function verify(id: bigint) {
@@ -21,6 +23,12 @@ async function verify(id: bigint) {
   try {
     const bounty = await getBounty(id);
     if (bounty.status !== 2) return;
+    const previous = verifiedRecently.get(String(id));
+    if (
+      previous?.hash === bounty.submissionHash &&
+      Date.now() - previous.at < 60_000
+    )
+      return;
     const base = new URL(
       process.env.SERVICE_BASE_URL || "http://localhost:8787",
     );
@@ -50,6 +58,10 @@ async function verify(id: bigint) {
     });
     const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
     if (receipt.status !== "success") throw new Error(`Verify reverted: ${tx}`);
+    verifiedRecently.set(String(id), {
+      hash: bounty.submissionHash,
+      at: Date.now(),
+    });
     await saveReason(id, verdict.reason, verdict.score, verdict.pass);
     console.log(
       `Verified #${id}: ${verdict.pass}, score ${verdict.score}, ${tx}`,
@@ -102,6 +114,8 @@ async function settleApproved() {
     })) as bigint;
     for (let id = 0n; id < total; id++) {
       if (settling.has(String(id)) || busy.has(String(id))) continue;
+      if (Date.now() - (settledRecently.get(String(id)) || 0) < 60_000)
+        continue;
       const bounty = await getBounty(id);
       if (bounty.status === 2) {
         await verify(id);
@@ -123,6 +137,7 @@ async function settleApproved() {
         });
         if (receipt.status !== "success")
           throw new Error(`Claim reverted: ${tx}`);
+        settledRecently.set(String(id), Date.now());
         console.log(`Automatically released bounty #${id}: ${tx}`);
       } catch (error) {
         console.error(`Settlement #${id}:`, error);
